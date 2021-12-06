@@ -1,5 +1,6 @@
-let g:python_host_prog = '/home/ftakai/.pyenv/versions/2.7.18/bin/python2'
-let g:python3_host_prog = '/home/ftakai/.pyenv/versions/3.9.9/bin/python3'
+let python_home=expand("~/.pyenv/versions/")
+let g:python3_host_prog = python_home . '3.9.9/bin/python3'
+let g:python_host_prog = python_home . '2.7.18/bin/python3'
 
 set nocompatible
 filetype off
