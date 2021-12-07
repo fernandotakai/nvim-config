@@ -1,6 +1,6 @@
 let python_home=expand("~/.pyenv/versions/")
 let g:python3_host_prog = python_home . '3.9.9/bin/python3'
-let g:python_host_prog = python_home . '2.7.18/bin/python3'
+let g:python_host_prog = python_home . '2.7.18/bin/python'
 
 set nocompatible
 filetype off
@@ -337,8 +337,8 @@ let g:syntastic_check_on_wq = 0
 let g:ycm_python_binary_path = 'python'
 let g:syntastic_python_checkers = ['flake8', 'python']
 
-let g:syntastic_python_python_exec = '/home/ftakai/bin/python-vim'
-let g:syntastic_python_flake8_exec = '/home/ftakai/bin/python-vim'
+let g:syntastic_python_python_exec = python_home . '3.9.9/bin/python3'
+let g:syntastic_python_flake8_exec = python_home . '3.9.9/bin/python3'
 let g:syntastic_python_flake8_args = ['-m', 'flake8']
 
 if getcwd() =~# '\/olark\/'
