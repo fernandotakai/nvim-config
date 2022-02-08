@@ -36,6 +36,8 @@ Plug 'jparise/vim-graphql'
 
 Plug 'elixir-editors/vim-elixir'
 
+Plug 'psf/black', {'branch': 'stable'}
+
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
 
@@ -360,7 +362,7 @@ require'nvim-treesitter.configs'.setup {
     -- Using this option may slow down your editor, and you may see some duplicate highlights.
     -- Instead of true it can also be a list of languages
     -- additional_vim_regex_highlighting = false,
-    disable = {"bash"} -- disable bash because the highlighting is bonkers
+    disable = {"bash", "dockerfile"} -- disable bash because the highlighting is bonkers
   },
   incremental_selection = {
     enable = true,
