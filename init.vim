@@ -498,6 +498,12 @@ require'lspconfig'.pylsp.setup{
         }
     }
 }
+
+require'lspconfig'.elixirls.setup{
+    cmd = { "/home/ftakai/projects/elixir/elixir-ls/language_server.sh" },
+    on_attach = on_attach
+}
+
 EOF
 
 
