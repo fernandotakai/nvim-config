@@ -10,7 +10,6 @@ let s:editor_root=expand("~/.config/nvim")
 call plug#begin(stdpath('data') . '/plugged')
 
 " from github
-Plug 'vim-syntastic/syntastic'
 Plug 'hdima/python-syntax'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
@@ -339,31 +338,17 @@ augroup end
 
 let g:airline_powerline_fonts = 1
 let g:airline_theme = 'powerlineish'
-let g:airline_extensions = ['branch', 'ctrlp', 'syntastic']
+let g:airline_extensions = ['branch', 'ctrlp']
 let g:python_slow_sync = 1
-
-let g:airline#extensions#syntastic#enabled = 1
 
 let python_highlight_all = 1
 let python_print_as_function = 1
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 0
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-
 let g:ycm_python_binary_path = 'python'
-let g:syntastic_python_checkers = ['flake8', 'python']
-
-let g:syntastic_python_python_exec = python_home . '3.9.9/bin/python3'
-let g:syntastic_python_flake8_exec = python_home . '3.9.9/bin/python3'
-let g:syntastic_python_flake8_args = ['-m', 'flake8']
-
-if getcwd() =~# '\/olark\/'
-    let python_version_2 = 1
-endif
 
 map q: <Nop>
+
+map <leader>f :Black<CR>
 
 let g:isort_command = '/home/ftakai/.pyenv/shims/isort'
 
@@ -371,7 +356,7 @@ let g:isort_command = '/home/ftakai/.pyenv/shims/isort'
 "
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ensure_installed = "all", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
   sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
   highlight = {
     enable = true,              -- false will disable the whole extension
@@ -398,34 +383,67 @@ set completeopt=menu,menuone,noselect
 
 lua <<EOF
 
+-- vim.lsp.set_log_level("debug")
+
 local opts = { noremap=true, silent=true }
-vim.api.nvim_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-vim.api.nvim_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
+
+vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 
 local on_attach = function(client, bufnr)
   -- Enable completion triggered by <c-x><c-o>
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-  -- Mappings.
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+  local bufopts = { noremap=true, silent=true, buffer=bufnr }
+
+  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
+  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+  vim.keymap.set('n', '<leader>K', vim.lsp.buf.hover, bufopts)
+  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
+  -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+  -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+  -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+  -- vim.keymap.set('n', '<space>wl', function()
+    -- print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  -- end, bufopts)
+  -- vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
+
+  vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
+  vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
+  vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+  -- Not working?
+  -- vim.keymap.set('n', '<leader>f', function() vim.lsp.buf.format { async = true } end, bufopts)
 end
 
-local cmp = require'cmp'
+
+local lsp_flags = {
+  -- This is the default in Nvim 0.7+
+  debounce_text_changes = 150,
+}
+
+require'lspconfig'.pylsp.setup{
+    flags = lsp_flags,
+    on_attach = on_attach,
+    settings = {
+        pylsp = {
+            plugins = {
+                pylint = { enabled = false },
+                flake8 = { enabled = true },
+                pycodestyle = { enabled = false },
+                pyflakes = { enabled = false },
+                black = {
+                    enabled = true,
+                    cache_config = false,
+                },
+            },
+            configurationSources = {"flake8"},
+        }
+    }
+}
+
+local cmp = require 'cmp'
 
 cmp.setup({
     snippet = {
@@ -483,34 +501,6 @@ cmp.setup.cmdline(':', {
     { name = 'cmdline' }
     })
 })
-
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-
-require'lspconfig'.pylsp.setup{
-    capabilities = capabilities,
-    on_attach = on_attach,
-    settings = {
-        pylsp = {
-            plugins = {
-                pylint = { enabled = false },
-                flake8 = { enabled = true },
-                pycodestyle = { enabled = false },
-                pyflakes = { enabled = false },
-                black = {
-                    enabled = true,
-                    cache_config = true,
-                    preview = true,
-                },
-            },
-            configurationSources = {"flake8"},
-        }
-    }
-}
-
-require'lspconfig'.elixirls.setup{
-    cmd = { "/home/ftakai/projects/elixir/elixir-ls/language_server.sh" },
-    on_attach = on_attach
-}
 
 -- this is slow. let's not do it.
 -- vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()]]
