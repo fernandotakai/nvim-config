@@ -1,5 +1,5 @@
 let python_home=expand("~/.pyenv/versions/")
-let g:python3_host_prog = python_home . '3.9.9/bin/python3'
+let g:python3_host_prog = python_home . '3.10.8/bin/python'
 let g:python_host_prog = python_home . '2.7.18/bin/python'
 
 set nocompatible
@@ -23,14 +23,16 @@ Plug 'rodjek/vim-puppet'
 Plug 'tpope/vim-markdown'
 Plug 'sophacles/vim-bundle-mako'
 Plug 'dogrover/vim-pentadactyl'
-"Plug 'honza/vim-snippets'
-"Plug 'Valloric/YouCompleteMe'
 Plug 'rking/ag.vim'
 Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'posva/vim-vue'
 Plug 'leafgarland/typescript-vim'
 Plug 'jparise/vim-graphql'
+
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 
 Plug 'elixir-editors/vim-elixir'
 
@@ -54,8 +56,8 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 
-Plug 'SirVer/ultisnips'
-Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+" Plug 'SirVer/ultisnips'
+" Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 
 Plug 'tridactyl/vim-tridactyl'
 Plug 'tpope/vim-rhubarb'
@@ -125,15 +127,6 @@ set expandtab
 
 " fuck you i want my clipboard to be awesome
 set clipboard=unnamed
-
-autocmd FileType text setlocal textwidth=79
-autocmd FileType ruby setlocal shiftwidth=2 tabstop=2
-autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
-autocmd FileType coffee setlocal shiftwidth=2 tabstop=2
-autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
-autocmd FileType vue setlocal shiftwidth=2 tabstop=2
-autocmd FileType html setlocal shiftwidth=2 tabstop=2
-autocmd FileType javascript.jsx setlocal shiftwidth=2 tabstop=2
 
 " When editing a file, always jump to the last known cursor position.
 " Don't do it when the position is invalid or when inside an event handler
@@ -256,8 +249,7 @@ map <leader>be :Bs
 map <leader>bv :Vbuff 
 map <leader>bs :sbuff 
 map <leader>x :BufClose<CR>
-map <leader>q :CtrlPBuffer<cr>
-
+" map <leader>q :CtrlPBuffer<cr>
 
 " \1 \2 \3 : go to buffer 1/2/3 etc
 nnoremap <Leader>1 :1b<CR>
@@ -282,34 +274,6 @@ map <c-j> <c-w>j
 map <c-k> <c-w>k
 map <c-l> <c-w>l
 
-let g:pyflakes_use_quickfix = 0
-
-let g:ctrlp_user_command = ['.git/', 'cd %s && git ls-files', 'find %s -type f']
-
-let ctrlp_filter_greps = "".
-    \ "egrep -iv '\\.(" .
-    \ "swp|swo|log|so|o|pyc|jpe?g|png|gif|mo|po" .
-    \ ")$' | " .
-    \ "egrep -v '^(\\./)?(" .
-    \ "libs/|deploy/vendor/|.git/|.hg/|.svn/|.*migrations/" .
-    \ ")'"
-
-let my_ctrlp_user_command = "" .
-    \ "find %s '(' -type f -or -type l ')' -maxdepth 15 -not -path '*/\\.*/*' | " .
-    \ ctrlp_filter_greps
-
-let my_ctrlp_git_command = "" .
-    \ "cd %s && git ls-files | " .
-    \ ctrlp_filter_greps
-
-let g:ctrlp_user_command = ['.git/', my_ctrlp_git_command, my_ctrlp_user_command]
-
-let g:ctrlp_map = '<leader>p'
-let g:ctrlp_extensions = ['tag', 'buffertag']
-
-map <Leader>[ :CtrlPTag<cr>
-map <Leader>] :CtrlPBufTag<cr>
-
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*.so,*.pyc,*.class,*/target/*
 
 " MiniBuff explorer settings
@@ -317,12 +281,6 @@ let g:vim_markdown_folding_disabled=1
 
 let g:tagbar_autofocus = 1
 let g:tagbar_foldlevel = 0
-
-let g:UltiSnipsExpandTrigger="<c-b>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-
-nnoremap <leader>Y :let g:ycm_auto_trigger=!g:ycm_auto_trigger<CR>
 
 au BufRead,BufNewFile /usr/local/Cellar/nginx/0.7.65/conf/* set ft=nginx 
 au BufNewFile,BufRead *pentadactylrc*,*.penta set filetype=pentadactyl
@@ -332,6 +290,17 @@ au BufRead,BufNewFile *.rc,*.rs set filetype=rust
 au BufRead,BufNewFile *.thrift set filetype=thrift
 au BufRead,BufNewFile *.spec set filetype=json
 au BufRead,BufNewFile *.tsx set filetype=typescript
+
+autocmd FileType text setlocal textwidth=79
+autocmd FileType ruby setlocal shiftwidth=2 tabstop=2
+autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
+autocmd FileType coffee setlocal shiftwidth=2 tabstop=2
+autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
+autocmd FileType vue setlocal shiftwidth=2 tabstop=2
+autocmd FileType html setlocal shiftwidth=2 tabstop=2
+autocmd FileType javascript.jsx setlocal shiftwidth=2 tabstop=2
+autocmd FileType lua setlocal shiftwidth=2 tabstop=2
+autocmd FileType vim setlocal shiftwidth=2 tabstop=2
 
 augroup COMMIT_EDITMSG
 augroup end
@@ -344,13 +313,44 @@ let g:python_slow_sync = 1
 let python_highlight_all = 1
 let python_print_as_function = 1
 
-let g:ycm_python_binary_path = 'python'
-
 map q: <Nop>
 
 map <leader>f :Black<CR>
 
 let g:isort_command = '/home/ftakai/.pyenv/shims/isort'
+
+" Telescope bindings
+nnoremap <leader>p <cmd>Telescope find_files<cr>
+nnoremap <leader>q <cmd>Telescope buffers<cr>
+nnoremap <leader>g <cmd>Telescope live_grep<cr>
+nnoremap <leader>[ <cmd>Telescope tags<cr>
+
+lua <<EOF
+
+local telescope = require('telescope')
+local actions = require('telescope.actions')
+telescope.setup {
+  defaults = {
+    mappings = {
+      i = {
+        ["<esc>"] = actions.close,
+        ["<C-s>"] = actions.select_horizontal
+      },
+    },
+  },
+  extensions = {
+    fzf = {
+      fuzzy = true,
+      override_generic_sorter = true,
+      override_file_sorter = true,
+      case_mode = "smart_case",
+    }
+  }
+}
+
+telescope.load_extension("fzf")
+EOF
+
 
 " Treesitter configuration
 "
@@ -443,64 +443,6 @@ require'lspconfig'.pylsp.setup{
     }
 }
 
-local cmp = require 'cmp'
-
-cmp.setup({
-    snippet = {
-        -- REQUIRED - you must specify a snippet engine
-        expand = function(args)
-            vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-        end,
-    },
-
-    mapping = {
-        ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
-        ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
-        ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
-        ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
-        ['<C-e>'] = cmp.mapping({
-            i = cmp.mapping.abort(),
-            c = cmp.mapping.close(),
-        }),
-        ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-        -- ['<Tab>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-        -- ['<Tab>'] = cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-        ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
-        ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
-    },
-
-    sources = cmp.config.sources({
-        { name = 'ultisnips' }, -- For ultisnips users.
-        { name = 'nvim_lsp' },
-        }, {
-        { name = 'buffer' },
-        })
-    }
-)
-
--- Set configuration for specific filetype.
-cmp.setup.filetype('gitcommit', {
-    sources = cmp.config.sources({
-    -- { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it. 
-    }, {
-    })
-})
-
--- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline('/', {
-    sources = {
-        { name = 'buffer' }
-        }
-    })
-
--- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline(':', {
-    sources = cmp.config.sources({
-    { name = 'path' }
-    }, {
-    { name = 'cmdline' }
-    })
-})
 
 -- this is slow. let's not do it.
 -- vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()]]
