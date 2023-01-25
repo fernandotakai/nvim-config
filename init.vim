@@ -27,7 +27,6 @@ Plug 'rking/ag.vim'
 Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'posva/vim-vue'
-Plug 'leafgarland/typescript-vim'
 Plug 'jparise/vim-graphql'
 
 Plug 'nvim-lua/plenary.nvim'
@@ -39,13 +38,8 @@ Plug 'elixir-editors/vim-elixir'
 Plug 'psf/black', {'tag': 'stable'}
 Plug 'stsewd/isort.nvim', { 'do': ':UpdateRemotePlugins' }
 
-Plug 'pangloss/vim-javascript'
-Plug 'mxw/vim-jsx'
-
-Plug 'kchmck/vim-coffee-script'
-Plug 'mtscout6/vim-cjsx'
-
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter-context'
 
 Plug 'neovim/nvim-lspconfig'
 
@@ -186,9 +180,6 @@ map <Leader><Tab> :Scratch<cr>
 nmap <Leader>c :close<cr>
 nmap <Leader>l :Lexplore<CR>
 
-nnoremap / /\v
-vnoremap / /\v
-
 noremap  <Up> <nop>
 noremap  <Down> <nop>
 
@@ -307,6 +298,10 @@ autocmd FileType javascript.jsx setlocal shiftwidth=2 tabstop=2
 autocmd FileType lua setlocal shiftwidth=2 tabstop=2
 autocmd FileType vim setlocal shiftwidth=2 tabstop=2
 
+" close QuickFix window after selecting an option
+" this is quite useful for go-to-references inside LSP
+autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
+
 augroup COMMIT_EDITMSG
 augroup end
 
@@ -315,16 +310,13 @@ let g:airline_theme = 'powerlineish'
 let g:airline_extensions = ['branch', 'ctrlp']
 let g:python_slow_sync = 1
 
-let python_highlight_all = 1
-let python_print_as_function = 1
-
 map q: <Nop>
 
 map <leader>f :Black<CR>
 
 let g:isort_command = '/home/ftakai/.pyenv/shims/isort'
 
-let g:UltiSnipsExpandTrigger="<c-n>"
+nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
 
 " Telescope bindings
 nnoremap <leader>p <cmd>Telescope find_files<cr>
@@ -372,7 +364,7 @@ require'nvim-treesitter.configs'.setup {
     -- Using this option may slow down your editor, and you may see some duplicate highlights.
     -- Instead of true it can also be a list of languages
     -- additional_vim_regex_highlighting = false,
-    disable = {"bash", "dockerfile"} -- disable bash because the highlighting is bonkers
+    -- disable = {"bash", "dockerfile"} -- disable bash because the highlighting is bonkers
   },
   incremental_selection = {
     enable = true,
@@ -501,7 +493,7 @@ require'lspconfig'.pylsp.setup{
                 pyflakes = { enabled = false },
                 black = {
                     enabled = true,
-                    cache_config = false,
+                    cache_config = true,
                 },
             },
             configurationSources = {"flake8"},
