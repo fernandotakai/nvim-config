@@ -13,10 +13,8 @@ call plug#begin(stdpath('data') . '/plugged')
 Plug 'hdima/python-syntax'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
-Plug 'sjl/gundo.vim'
 Plug 'scrooloose/nerdcommenter'
-Plug 'duff/vim-scratch'
-Plug 'ctrlpvim/ctrlp.vim'
+Plug 'FraserLee/ScratchPad'
 Plug 'fholgado/minibufexpl.vim'
 Plug 'majutsushi/tagbar'
 Plug 'rodjek/vim-puppet'
@@ -28,14 +26,15 @@ Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'posva/vim-vue'
 Plug 'jparise/vim-graphql'
+Plug 'gbprod/yanky.nvim'
 
 Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 
 Plug 'elixir-editors/vim-elixir'
 
-Plug 'psf/black', {'tag': 'stable'}
+Plug 'psf/black', { 'tag': 'stable'}
 Plug 'stsewd/isort.nvim', { 'do': ':UpdateRemotePlugins' }
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -164,9 +163,6 @@ vmap <F7> "+ygv"zy`>
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
 
-nmap <c-p> <Plug>yankstack_substitute_newer_paste
-nmap <c-P> <Plug>yankstack_substitute_older_paste
-
 " nmap <c-m> :nohlsearch<cr>
 nmap <silent> <leader>ev :e $MYVIMRC<CR>
 nmap <silent> <leader>sv :so $MYVIMRC<CR>
@@ -176,7 +172,7 @@ map <Leader>t :TagbarToggle<CR>
 map <Leader>y :YRShow<cr>
 map <Leader>a :Ag
 map <leader>g :GundoToggle<cr>
-map <Leader><Tab> :Scratch<cr>
+map <Leader><Tab> :ScratchPad<cr>
 nmap <Leader>c :close<cr>
 nmap <Leader>l :Lexplore<CR>
 
@@ -245,7 +241,6 @@ map <leader>be :Bs
 map <leader>bv :Vbuff 
 map <leader>bs :sbuff 
 map <leader>x :BufClose<CR>
-" map <leader>q :CtrlPBuffer<cr>
 
 " \1 \2 \3 : go to buffer 1/2/3 etc
 nnoremap <Leader>1 :1b<CR>
@@ -307,12 +302,10 @@ augroup end
 
 let g:airline_powerline_fonts = 1
 let g:airline_theme = 'powerlineish'
-let g:airline_extensions = ['branch', 'ctrlp']
+let g:airline_extensions = ['branch']
 let g:python_slow_sync = 1
 
 map q: <Nop>
-
-map <leader>f :Black<CR>
 
 let g:isort_command = '/home/ftakai/.pyenv/shims/isort'
 
@@ -322,7 +315,12 @@ nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
 nnoremap <leader>p <cmd>Telescope find_files<cr>
 nnoremap <leader>q <cmd>Telescope buffers<cr>
 nnoremap <leader>g <cmd>Telescope live_grep<cr>
+nnoremap <leader>y <cmd>Telescope yank_history<cr>
 nnoremap <leader>[ <cmd>Telescope tags<cr>
+
+let g:scratchpad_autostart = 0
+let g:scratchpad_autofocus = 1
+
 
 lua <<EOF
 
@@ -330,6 +328,7 @@ local telescope = require('telescope')
 local actions = require('telescope.actions')
 telescope.setup {
   defaults = {
+    dynamic_preview_title = true,
     mappings = {
       i = {
         ["<esc>"] = actions.close,
@@ -412,9 +411,10 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
   vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-  -- Not working?
-  -- vim.keymap.set('n', '<leader>f', function() vim.lsp.buf.format { async = true } end, bufopts)
+  -- For python, you need https://github.com/python-lsp/python-lsp-black
+  vim.keymap.set('n', '<leader>f', function() vim.lsp.buf.format { async = true } end, bufopts)
 end
+
 
 local cmp = require 'cmp'
 
@@ -500,6 +500,30 @@ require'lspconfig'.pylsp.setup{
         }
     }
 }
+
+require("yanky").setup({
+  ring = {
+    sync_with_numbered_registers = true,
+  },
+  system_clipboard = {
+    sync_with_ring = true,
+  },
+  highlight = {
+    on_put = false,
+    on_yank = false,
+    timer = 200,
+  },
+})
+
+require("telescope").load_extension("yank_history")
+
+vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
+vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
+vim.keymap.set({"n","x"}, "gp", "<Plug>(YankyGPutAfter)")
+vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
+
+vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
+vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
 
 -- this is slow. let's not do it.
 -- vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()]]
