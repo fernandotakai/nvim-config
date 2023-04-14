@@ -72,6 +72,9 @@ Plug 'joshdick/onedark.vim'
 Plug 'sainnhe/edge'
 Plug 'ayu-theme/ayu-vim'
 
+Plug 'tpope/vim-dispatch'
+Plug 'tartansandal/vim-compiler-pytest'
+
 call plug#end()
 
 let ayucolor="dark"
@@ -152,7 +155,6 @@ set virtualedit=all
 nnoremap # :set hlsearch<cr>#
 nnoremap / :set hlsearch<cr>/
 nnoremap ? :set hlsearch<cr>?
-nnoremap <silent> <C-l> :nohlsearch<CR><C-l>
 nnoremap * *<c-o>
 
 let maplocalleader=','
@@ -175,6 +177,8 @@ map <leader>g :GundoToggle<cr>
 map <Leader><Tab> :ScratchPad<cr>
 nmap <Leader>c :close<cr>
 nmap <Leader>l :Lexplore<CR>
+
+map <Leader>m :Make %<CR>
 
 noremap  <Up> <nop>
 noremap  <Down> <nop>
@@ -265,6 +269,8 @@ map <c-j> <c-w>j
 map <c-k> <c-w>k
 map <c-l> <c-w>l
 
+nnoremap <silent> <C-l> :nohlsearch<CR><C-l>
+
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*.so,*.pyc,*.class,*/target/*
 
 " MiniBuff explorer settings
@@ -292,6 +298,9 @@ autocmd FileType html setlocal shiftwidth=2 tabstop=2
 autocmd FileType javascript.jsx setlocal shiftwidth=2 tabstop=2
 autocmd FileType lua setlocal shiftwidth=2 tabstop=2
 autocmd FileType vim setlocal shiftwidth=2 tabstop=2
+autocmd FileType typescript setlocal shiftwidth=2 tabstop=2
+
+autocmd FileType python setlocal makeprg=pytest
 
 " close QuickFix window after selecting an option
 " this is quite useful for go-to-references inside LSP
@@ -308,8 +317,6 @@ let g:python_slow_sync = 1
 map q: <Nop>
 
 let g:isort_command = '/home/ftakai/.pyenv/shims/isort'
-
-nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
 
 " Telescope bindings
 nnoremap <leader>p <cmd>Telescope find_files<cr>
@@ -385,10 +392,10 @@ lua <<EOF
 
 local opts = { noremap=true, silent=true }
 
-vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+vim.keymap.set('n', '<leader>a', vim.diagnostic.setloclist, opts)
 
 local on_attach = function(client, bufnr)
   -- Enable completion triggered by <c-x><c-o>
@@ -527,6 +534,16 @@ vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
 
 -- this is slow. let's not do it.
 -- vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()]]
+
+require'lspconfig'.tsserver.setup {
+    flags = lsp_flags,
+    on_attach = on_attach,
+}
+
+-- require'lspconfig'.ruff_lsp.setup {
+--   flags = lsp_flags,
+--   on_attach = on_attach
+-- }
 EOF
 
 
