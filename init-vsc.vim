@@ -149,7 +149,7 @@ nnoremap <Leader>d <cmd>call VSCodeNotify('workbench.action.closeActiveEditor')<
 nnoremap <Leader>e <cmd>call VSCodeNotify('workbench.view.explorer')<CR>
 nnoremap <leader>p <cmd>call VSCodeNotify('workbench.action.quickOpen')<CR>
 nnoremap <leader>q <cmd>call VSCodeNotify('workbench.action.quickOpen')<CR>
-nnoremap <leader>g <cmd>call VSCodeNotify('filesExplorer.findInFolder')<CR>
+nnoremap <leader>g <cmd>call VSCodeNotify('workbench.action.experimental.quickTextSearch')<CR>
 nnoremap <leader>[ <cmd>call VSCodeNotify('workbench.action.gotoSymbol')<CR>
 nnoremap <leader>t <cmd>call VSCodeNotify('workbench.action.showCommands')<CR>
 nnoremap <leader>f <cmd>call VSCodeNotify('workbench.action.focusActiveEditorGroup')<CR>
