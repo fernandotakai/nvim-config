@@ -134,7 +134,8 @@ local plugins = {
       {
         'nvim-telescope/telescope-fzf-native.nvim',
         build = 'make',
-      }
+      },
+      'debugloop/telescope-undo.nvim',
     }
   }, -- telescope
 
@@ -194,6 +195,11 @@ local plugins = {
     build = ':TSUpdate',
   }, -- treesitter
 
+  {
+    "LintaoAmons/scratch.nvim",
+    event = "VeryLazy",
+  }, -- scratch
+
 }
 
 local lazy_opts = {}
@@ -228,12 +234,15 @@ telescope.setup {
 }
 
 telescope.load_extension("fzf")
+telescope.load_extension("undo")
 
 vim.keymap.set('n', '<leader>p', telescope_builtin.find_files, {})
 vim.keymap.set('n', '<leader>q', telescope_builtin.buffers, {})
 vim.keymap.set('n', '<leader>g', telescope_builtin.live_grep, {})
-vim.keymap.set('n', '<leader>[', telescope_builtin.tags, {})
+vim.keymap.set('n', '<leader>[', telescope_builtin.treesitter, {})
 vim.keymap.set('n', '<leader>?', telescope_builtin.oldfiles, {})
+
+vim.keymap.set('n', '<leader>G', telescope.extensions.undo.undo, {})
 
 -- end telescope }}}
 
@@ -326,7 +335,7 @@ require("nvim-tree").setup({
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'python', 'javascript', 'typescript', 'tsx', 'lua', 'bash' },
+    ensure_installed = { 'python', 'javascript', 'typescript', 'tsx', 'lua', 'bash', 'json' },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = false,
@@ -429,8 +438,8 @@ local servers = {
         yapf = { enabled = false },
       },
     }
-
   },
+  jsonls = {},
 }
 
 require('neodev').setup()
@@ -533,5 +542,11 @@ cmp.setup.cmdline(':', {
 })
 
 -- end autocomplete }}}
+
+-- scratch config {{{
+
+vim.keymap.set("n", "<leader><tab>", "<cmd>Scratch<cr>")
+
+-- end scratch }}}
 
 -- vim: ts=2 sts=2 sw=2 et foldmethod=marker foldlevel=0
