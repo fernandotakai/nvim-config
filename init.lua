@@ -1,4 +1,4 @@
--- vim options
+-- vim options {{{
 
 vim.opt.nu = true
 vim.opt.relativenumber = true
@@ -33,9 +33,9 @@ vim.opt.clipboard = 'unnamed'
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- end vim options
+-- end vim options }}}
 
--- remapping options
+-- remapping options {{{
 
 local keymap = vim.api.nvim_set_keymap
 local opts = { noremap = true, silent = true }
@@ -60,9 +60,9 @@ keymap('v', '<Right>', '>gv', opts)
 keymap('n', '<leader>bv', ':botright vsplit<cr>', opts)
 keymap('n', '<leader>bs', ':botright split<cr>', opts)
 
--- end remapping
+-- end remapping }}}
 
--- autocmds
+-- autocmds {{{
 
 -- try to open neovim on the last known position
 vim.api.nvim_create_autocmd('BufReadPost', {
@@ -76,10 +76,9 @@ vim.api.nvim_create_autocmd('BufReadPost', {
   end,
 })
 
--- end autocmds
+-- end autocmds }}}
 
-
--- plugins
+-- lazy setup {{{
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
@@ -92,8 +91,6 @@ if not vim.loop.fs_stat(lazypath) then
   }
 end
 vim.opt.rtp:prepend(lazypath)
-
--- end plugins
 
 local plugins = {
   'tpope/vim-fugitive',
@@ -151,7 +148,9 @@ local opts = {}
 
 require('lazy').setup(plugins, opts)
 
--- telescope config
+-- end lazy setup }}}
+
+-- telescope config {{{
 local telescope = require('telescope')
 local telescope_actions = require('telescope.actions')
 local telescope_builtin = require('telescope.builtin')
@@ -184,9 +183,9 @@ vim.keymap.set('n', '<leader>g', telescope_builtin.live_grep, {})
 vim.keymap.set('n', '<leader>[', telescope_builtin.tags, {})
 vim.keymap.set('n', '<leader>?', telescope_builtin.oldfiles, {})
 
--- end telescope
+-- end telescope }}}
 
--- bufferline config
+-- bufferline config {{{
 
 bufferline = require('bufferline')
 bufferline.setup{
@@ -216,18 +215,58 @@ vim.keymap.set('n', ']b', function() bufferline.go_to(-1) end, {})
 
 keymap('n', '<leader>d', ':bd<cr>', {})
 
--- end bufferline
+-- end bufferline }}}
 
+-- nvimtree config {{{
 
--- nvimtree config
+local nvim_tree_api = require("nvim-tree.api")
+
+local function edit_or_open()
+  local node = nvim_tree_api.tree.get_node_under_cursor()
+
+  if node.nodes ~= nil then
+    -- expand or collapse folder
+    nvim_tree_api.node.open.edit()
+  else
+    -- open file
+    nvim_tree_api.node.open.edit()
+    -- Close the tree if file was opened
+    nvim_tree_api.tree.close()
+  end
+end
+
+-- open as vsplit on current node
+local function vsplit_preview()
+  local node = nvim_tree_api.tree.get_node_under_cursor()
+
+  if node.nodes ~= nil then
+    -- expand or collapse folder
+    nvim_tree_api.node.open.edit()
+  else
+    -- open file as vsplit
+    nvim_tree_api.node.open.vertical()
+  end
+
+  -- Finally refocus on tree if it was lost
+  nvim_tree_api.tree.focus()
+end
+
+local function nvim_tree_on_attach(bufnum)
+  vim.keymap.set("n", "l", edit_or_open)
+  vim.keymap.set("n", "L", vsplit_preview)
+  vim.keymap.set("n", "h", nvim_tree_api.tree.close)
+  vim.keymap.set("n", "H", nvim_tree_api.tree.collapse_all)
+end
+
+vim.api.nvim_set_keymap("n", "<C-h>", ":NvimTreeToggle<cr>", {silent = true, noremap = true})
 
 require("nvim-tree").setup({
+  on_attach = nvim_tree_on_attach,
   view = {
     width = 50,
   },
 })
-vim.api.nvim_set_keymap("n", "<C-h>", ":NvimTreeToggle<cr><c-w><c-w>", {silent = true, noremap = true})
 
--- end nvimtree
+-- end nvimtree }}}
 
--- vim: ts=2 sts=2 sw=2 et
+-- vim: ts=2 sts=2 sw=2 et foldmethod=marker foldlevel=0
