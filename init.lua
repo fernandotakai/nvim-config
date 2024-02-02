@@ -200,6 +200,10 @@ local plugins = {
     event = "VeryLazy",
   }, -- scratch
 
+  {
+    "gbprod/yanky.nvim",
+    opts = {}
+  }, -- yanky
 }
 
 local lazy_opts = {}
@@ -243,6 +247,8 @@ vim.keymap.set('n', '<leader>[', telescope_builtin.treesitter, {})
 vim.keymap.set('n', '<leader>?', telescope_builtin.oldfiles, {})
 
 vim.keymap.set('n', '<leader>G', telescope.extensions.undo.undo, {})
+
+vim.keymap.set('n', '<leader>y', telescope.extensions.yank_history.yank_history, {})
 
 -- end telescope }}}
 
@@ -548,5 +554,16 @@ cmp.setup.cmdline(':', {
 vim.keymap.set("n", "<leader><tab>", "<cmd>Scratch<cr>")
 
 -- end scratch }}}
+
+-- yanky config {{{
+
+vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
+vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
+vim.keymap.set({"n","x"}, "gp", "<Plug>(YankyGPutAfter)")
+vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
+
+require("telescope").load_extension("yank_history")
+
+-- end yanky }}}
 
 -- vim: ts=2 sts=2 sw=2 et foldmethod=marker foldlevel=0
