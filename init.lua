@@ -204,6 +204,11 @@ local plugins = {
     "gbprod/yanky.nvim",
     opts = {}
   }, -- yanky
+
+  {
+    "shortcuts/no-neck-pain.nvim",
+    version = '*',
+  }, -- no neck pain
 }
 
 local lazy_opts = {}
@@ -302,33 +307,34 @@ local function edit_or_open()
   end
 end
 
+-- currently conflicting with... stuff?
 -- open as vsplit on current node
-local function vsplit_preview()
-  local node = nvim_tree_api.tree.get_node_under_cursor()
+--local function vsplit_preview()
+  --local node = nvim_tree_api.tree.get_node_under_cursor()
 
-  if node.nodes ~= nil then
-    -- expand or collapse folder
-    nvim_tree_api.node.open.edit()
-  else
-    -- open file as vsplit
-    nvim_tree_api.node.open.vertical()
-  end
+  --if node.nodes ~= nil then
+    ---- expand or collapse folder
+    --nvim_tree_api.node.open.edit()
+  --else
+    ---- open file as vsplit
+    --nvim_tree_api.node.open.vertical()
+  --end
 
-  -- Finally refocus on tree if it was lost
-  nvim_tree_api.tree.focus()
-end
+  ---- Finally refocus on tree if it was lost
+  --nvim_tree_api.tree.focus()
+--end
 
-local function nvim_tree_on_attach(_)
-  vim.keymap.set("n", "l", edit_or_open)
-  vim.keymap.set("n", "L", vsplit_preview)
-  vim.keymap.set("n", "h", nvim_tree_api.tree.close)
-  vim.keymap.set("n", "H", nvim_tree_api.tree.collapse_all)
-end
+--local function nvim_tree_on_attach(_)
+  --vim.keymap.set("n", "l", edit_or_open)
+  --vim.keymap.set("n", "L", vsplit_preview)
+  --vim.keymap.set("n", "h", nvim_tree_api.tree.close)
+  --vim.keymap.set("n", "H", nvim_tree_api.tree.collapse_all)
+--end
 
 vim.api.nvim_set_keymap("n", "<C-h>", ":NvimTreeToggle<cr>", {silent = true, noremap = true})
 
 require("nvim-tree").setup({
-  on_attach = nvim_tree_on_attach,
+  -- on_attach = nvim_tree_on_attach,
   view = {
     width = 50,
   },
@@ -522,7 +528,7 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     -- i don't like snippets :/
-    -- { name = 'luasnip' },
+    { name = 'luasnip' },
     { name = 'path' },
   },
 }
@@ -565,5 +571,16 @@ vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
 require("telescope").load_extension("yank_history")
 
 -- end yanky }}}
+
+-- no neck pain config {{{
+
+require("no-neck-pain").setup({
+  width = 210
+})
+
+
+vim.keymap.set("n", "<leader>n", "<cmd>NoNeckPain<cr>")
+
+-- end no neck pain }}}
 
 -- vim: ts=2 sts=2 sw=2 et foldmethod=marker foldlevel=0
