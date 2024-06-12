@@ -22,7 +22,7 @@ vim.opt.undofile = true
 vim.opt.undolevels = 50
 vim.opt.undoreload = 50
 
-vim.opt.lazyredraw=true
+vim.opt.lazyredraw = true
 
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
@@ -40,6 +40,23 @@ vim.g.loaded_netrwPlugin = 1
 -- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 
 -- end vim options }}}
+
+-- {{{ custom clipboard for orbstack
+if vim.fn.has("macunix") == 0 and vim.fn.executable("pbcopy") == 1 then
+  vim.g.clipboard = {
+    name = 'OrbStack clipboard',
+    copy = {
+      ['+'] = 'pbcopy',
+      ['*'] = 'pbcopy',
+    },
+    paste = {
+      ['+'] = 'pbpaste',
+      ['*'] = 'pbpaste',
+    },
+    cache_enabled = false,
+  }
+end
+-- }}} end custom clipboard for orbstack
 
 -- remapping options {{{
 
@@ -111,7 +128,7 @@ local plugins = {
     'sainnhe/sonokai',
     lazy = false,
     priority = 1000,
-    config = function ()
+    config = function()
       vim.cmd([[ colorscheme sonokai ]])
     end,
   }, --sonokai
@@ -141,7 +158,6 @@ local plugins = {
 
   {
     'akinsho/bufferline.nvim',
-    version = '*',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
   }, -- bufferline
 
@@ -162,7 +178,7 @@ local plugins = {
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',       opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -260,7 +276,7 @@ vim.keymap.set('n', '<leader>y', telescope.extensions.yank_history.yank_history,
 -- bufferline config {{{
 
 local bufferline = require('bufferline')
-bufferline.setup{
+bufferline.setup {
   options = {
     numbers = "ordinal",
     offsets = {
@@ -310,28 +326,28 @@ end
 -- currently conflicting with... stuff?
 -- open as vsplit on current node
 --local function vsplit_preview()
-  --local node = nvim_tree_api.tree.get_node_under_cursor()
+--local node = nvim_tree_api.tree.get_node_under_cursor()
 
-  --if node.nodes ~= nil then
-    ---- expand or collapse folder
-    --nvim_tree_api.node.open.edit()
-  --else
-    ---- open file as vsplit
-    --nvim_tree_api.node.open.vertical()
-  --end
+--if node.nodes ~= nil then
+---- expand or collapse folder
+--nvim_tree_api.node.open.edit()
+--else
+---- open file as vsplit
+--nvim_tree_api.node.open.vertical()
+--end
 
-  ---- Finally refocus on tree if it was lost
-  --nvim_tree_api.tree.focus()
+---- Finally refocus on tree if it was lost
+--nvim_tree_api.tree.focus()
 --end
 
 --local function nvim_tree_on_attach(_)
-  --vim.keymap.set("n", "l", edit_or_open)
-  --vim.keymap.set("n", "L", vsplit_preview)
-  --vim.keymap.set("n", "h", nvim_tree_api.tree.close)
-  --vim.keymap.set("n", "H", nvim_tree_api.tree.collapse_all)
+--vim.keymap.set("n", "l", edit_or_open)
+--vim.keymap.set("n", "L", vsplit_preview)
+--vim.keymap.set("n", "h", nvim_tree_api.tree.close)
+--vim.keymap.set("n", "H", nvim_tree_api.tree.collapse_all)
 --end
 
-vim.api.nvim_set_keymap("n", "<C-h>", ":NvimTreeToggle<cr>", {silent = true, noremap = true})
+vim.api.nvim_set_keymap("n", "<C-h>", ":NvimTreeToggle<cr>", { silent = true, noremap = true })
 
 require("nvim-tree").setup({
   -- on_attach = nvim_tree_on_attach,
@@ -425,7 +441,7 @@ local servers = {
   -- pyright = {},
   -- rust_analyzer = {},
   -- tsserver = {},
-  html = { filetypes = { 'html', 'twig', 'hbs'} },
+  html = { filetypes = { 'html', 'twig', 'hbs' } },
 
   lua_ls = {
     Lua = {
@@ -535,7 +551,7 @@ cmp.setup {
 
 cmp.setup.filetype('gitcommit', {
   sources = cmp.config.sources({
-    -- { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it. 
+    -- { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
   }, {})
 })
 
@@ -549,8 +565,8 @@ cmp.setup.cmdline(':', {
   sources = cmp.config.sources({
     { name = 'path' }
   }, {
-      { name = 'cmdline' }
-    })
+    { name = 'cmdline' }
+  })
 })
 
 -- end autocomplete }}}
@@ -563,10 +579,10 @@ vim.keymap.set("n", "<leader><tab>", "<cmd>Scratch<cr>")
 
 -- yanky config {{{
 
-vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
-vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
-vim.keymap.set({"n","x"}, "gp", "<Plug>(YankyGPutAfter)")
-vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
+vim.keymap.set({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
+vim.keymap.set({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
+vim.keymap.set({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)")
+vim.keymap.set({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)")
 
 require("telescope").load_extension("yank_history")
 
