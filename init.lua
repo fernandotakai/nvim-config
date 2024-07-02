@@ -32,8 +32,8 @@ vim.opt.clipboard = 'unnamed'
 vim.o.completeopt = 'menuone,noselect'
 
 -- disable netrw
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
+-- vim.g.loaded_netrw = 1
+-- vim.g.loaded_netrwPlugin = 1
 
 -- not sure if i like folds :/
 -- vim.opt.foldmethod = "expr"
@@ -225,6 +225,11 @@ local plugins = {
     "shortcuts/no-neck-pain.nvim",
     version = '*',
   }, -- no neck pain
+
+  {
+    "tpope/vim-rhubarb",
+    version = '*',
+  }, -- rhubarb (for git browse)
 }
 
 local lazy_opts = {}
