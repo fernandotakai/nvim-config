@@ -605,4 +605,20 @@ vim.keymap.set("n", "<leader>n", "<cmd>NoNeckPain<cr>")
 
 -- end no neck pain }}}
 
+-- lualine config {{{
+
+require("lualine").setup {
+  sections = {
+    lualine_c = {
+      {
+        "filename",
+        file_status = true,
+        path = 1
+      }
+    }
+  }
+}
+
+-- end lualine config }}}
+
 -- vim: ts=2 sts=2 sw=2 et foldmethod=marker foldlevel=0
