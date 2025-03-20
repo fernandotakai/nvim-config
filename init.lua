@@ -36,8 +36,9 @@ vim.o.completeopt = 'menuone,noselect'
 -- vim.g.loaded_netrwPlugin = 1
 
 -- not sure if i like folds :/
--- vim.opt.foldmethod = "expr"
--- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldlevel = 1
 
 -- end vim options }}}
 
@@ -153,6 +154,7 @@ local plugins = {
         build = 'make',
       },
       'debugloop/telescope-undo.nvim',
+      'Marskey/telescope-sg',
     }
   }, -- telescope
 
@@ -259,6 +261,14 @@ telescope.setup {
       override_generic_sorter = true,
       override_file_sorter = true,
       case_mode = "smart_case",
+    },
+    ast_grep = {
+      command = {
+        "ast-grep",
+        "--json=stream",
+      }, -- must have --json=stream
+      grep_open_files = false, -- search in opened files
+      lang = nil, -- string value, specify language for ast-grep `nil` for default 
     }
   }
 }
@@ -271,6 +281,7 @@ vim.keymap.set('n', '<leader>q', telescope_builtin.buffers, {})
 vim.keymap.set('n', '<leader>g', telescope_builtin.live_grep, {})
 vim.keymap.set('n', '<leader>[', telescope_builtin.treesitter, {})
 vim.keymap.set('n', '<leader>?', telescope_builtin.oldfiles, {})
+vim.keymap.set('n', '<leader>t', telescope_builtin.tags, {})
 
 vim.keymap.set('n', '<leader>G', telescope.extensions.undo.undo, {})
 
