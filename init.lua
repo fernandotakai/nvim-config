@@ -123,6 +123,8 @@ local plugins = {
   'tpope/vim-surround',
   'tpope/vim-sleuth',
 
+  'tridactyl/vim-tridactyl',
+
   'preservim/nerdcommenter',
 
   {
@@ -468,8 +470,8 @@ local servers = {
     },
   },
 
-  ruff_lsp = {},
-  tsserver = {},
+  ruff = {},
+  ts_ls = {},
   pylsp = {
     pylsp = {
       plugins = {
