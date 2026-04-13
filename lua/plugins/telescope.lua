@@ -9,7 +9,7 @@ return {
         'debugloop/telescope-undo.nvim',
         'Marskey/telescope-sg',
     },
-    config = function ()
+    config = function()
         local telescope_actions = require('telescope.actions')
         local telescope = require('telescope')
 
@@ -34,10 +34,17 @@ return {
                     command = {
                         'ast-grep',
                         '--json=stream',
-                    }, -- must have --json=stream
+                    },                       -- must have --json=stream
                     grep_open_files = false, -- search in opened files
-                    lang = nil, -- string value, specify language for ast-grep `nil` for default 
-                }
+                    lang = nil,              -- string value, specify language for ast-grep `nil` for default
+                },
+                undo = {
+                    mappings = {
+                        i = {
+                            ["<cr>"] = require("telescope-undo.actions").restore,
+                        }
+                    }
+                },
             }
         })
 
@@ -62,5 +69,9 @@ return {
         vim.keymap.set('n', '<leader>G', telescope.extensions.undo.undo, {})
 
         vim.keymap.set('n', '<leader>y', telescope.extensions.yank_history.yank_history, {})
+
+        vim.keymap.set('n', 'gr', telescope_builtin.lsp_references)
+        vim.keymap.set('n', 'gd', telescope_builtin.lsp_definitions)
+        vim.keymap.set('n', 'gi', telescope_builtin.lsp_implementations)
     end
 }

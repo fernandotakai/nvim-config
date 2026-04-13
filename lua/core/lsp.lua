@@ -71,10 +71,13 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
 
     map('n', 'K', vim.lsp.buf.hover, 'LSP Hover')
-    map('n', 'gd', vim.lsp.buf.definition, 'Go to definition')
     map('n', 'gD', vim.lsp.buf.declaration, 'Go to declaration')
-    map('n', 'gi', vim.lsp.buf.implementation, 'Go to implementation')
-    map('n', 'gr', vim.lsp.buf.references, 'References')
+
+    -- all these are being setup inside lua/plugins/telescope.lua
+    -- map('n', 'gr', vim.lsp.buf.references, 'References')
+    -- map('n', 'gd', vim.lsp.buf.definition, 'Go to definition')
+    -- map('n', 'gi', vim.lsp.buf.implementation, 'Go to implementation')
+
     map('n', '<leader>rn', vim.lsp.buf.rename, 'Rename symbol')
     map({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, 'Code action')
     vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
